@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <!-- 
+        ================================================================
+        SECTION : CONFIGURATION & SEO
+        ================================================================
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBTS| Excellence en Transport, Déménagement & Assainissement</title>
+    
+    <meta name="description" content="OBTS: Leader du transport de biens, déménagement, assainissement et logistique au Congo. Services professionnels de manutention et livraison express.">
+    
+    <!-- Importations de bibliothèques externes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F172A',
+                        secondary: '#F59E0B', // Jaune OBTS
+                        accent: '#10B981',
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    animation: {
+                        'bounce-slow': 'bounce 2s infinite',
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        /* Optimisation universelle pour tout navigateur */
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+        @media (min-width: 1024px) {
+            html, body { cursor: none; }
+            #cursor-dot, #cursor-outline { display: block; }
+        }
+        @media (max-width: 1023px) {
+            #cursor-dot, #cursor-outline { display: none; }
+            html, body { cursor: auto; }
+        }
+
+        /* --- REVEAL ANIMATION --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- CURSEUR CUSTOM --- */
+        #cursor-dot {
+            width: 8px; height: 8px; background-color: #F59E0B;
+            position: fixed; border-radius: 50%; z-index: 10000;
+            pointer-events: none; transform: translate(-50%, -50%);
+        }
+        #cursor-outline {
+            width: 40px; height: 40px; border: 2px solid rgba(245, 158, 11, 0.5);
+            position: fixed; border-radius: 50%; z-index: 9999;
+            pointer-events: none; transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s;
+        }
+
+        /* --- NAVIGATION --- */
+        .dropdown:hover .dropdown-menu { display: block; }
+        .dropdown-menu { display: none; }
+        section { scroll-margin-top: 8rem; }
+
+        /* --- SLIDERS ROBUSTES --- */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .slider-container {
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            gap: 1.5rem;
+            padding-bottom: 2rem;
+        }
+        
+        .slider-card {
+            flex: 0 0 auto !important; 
+            width: 300px;
+            max-width: 85vw;
+        }
+
+        /* --- CHATBOT UI MODERNE (TRANSPARENCE & FLOU) --- */
+        #chatbot-launcher {
+            opacity: 0.7;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #chatbot-launcher:hover { opacity: 1; transform: scale(1.1); }
+        
+        #chatbot-window {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+            /* Fond semi-transparent avec flou pour éliminer la bande blanche */
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        #chatbot-window.active { 
+            transform: translateY(0) scale(1); 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+
+        /* Effet Zoom Galerie & Avis */
+        .gallery-item img {
+            transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900 font-sans overflow-x-hidden text-left">
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+
+    <!-- Notification Custom -->
+    <div id="custom-toast" class="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-red-600 text-white px-6 py-3 rounded-2xl shadow-2xl opacity-0 pointer-events-none transition-opacity text-sm text-center">
+        Merci de remplir tous les champs obligatoires.
+    </div>
+
+    <!-- 
+        ================================================================
+        SECTION : NAVIGATION (HEADER)
+        ================================================================
+    -->
+    <nav class="fixed w-full z-[60] bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
+            <div class="flex justify-between h-28 md:h-36 items-center">
+                <div class="flex-shrink-0 flex items-center text-left">
+                    <img src="image/logo.png" alt="OBTS Logo" class="h-40 md:h-56 w-auto mr-4 object-contain" onerror="this.src='https://via.placeholder.com/250?text=LOGO+OBTS'">
+                    <span class="text-lg md:text-2xl font-bold text-primary tracking-tight uppercase">OBTS <span class="text-secondary">CONGO</span></span>
+                </div>
+                
+                <div class="hidden md:flex space-x-8 items-center text-left">
+                    <a href="#accueil" class="hover:text-secondary font-semibold transition magnet text-lg">Accueil</a>
+                    
+                    <div class="relative dropdown text-left">
+                        <a href="#services" class="hover:text-secondary font-semibold transition magnet flex items-center py-4 text-lg">
+                            Nos services <i class="fas fa-chevron-down ml-2 text-[10px]"></i>
+                        </a>
+                        <div class="dropdown-menu absolute top-full left-0 w-64 bg-white shadow-2xl rounded-2xl py-3 border border-gray-100 animate-fade-in text-left">
+                            <a href="#services" class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-secondary italic font-medium">Transports</a>
+                            <a href="#services" class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-secondary italic font-medium">Déménagement</a>
+                            <a href="#services" class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-secondary italic font-medium">Aménagement</a>
+                            <a href="#services" class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-secondary italic font-medium">Assainissement & Hygiène</a>
+                       
+                        </div>
+                    </div>
+                    
+                    <a href="#galerie" class="hover:text-secondary font-semibold transition magnet text-lg">Galerie</a>
+
+                    <a href="#contact" class="bg-secondary text-white px-8 py-3 rounded-xl font-bold hover:bg-primary transition magnet shadow-lg shadow-orange-200">Nous Contacter</a>
+                </div>
+
+                <div class="md:hidden text-left">
+                    <button id="mobile-menu-button" class="text-primary p-2 focus:outline-none relative z-[70]">
+                        <i class="fas fa-bars text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t p-6 space-y-4 shadow-xl text-left">
+            <a href="#accueil" class="mobile-nav-link block text-lg font-medium">Accueil</a>
+            <a href="#services" class="mobile-nav-link block text-lg font-medium">Nos services</a>
+            <a href="#galerie" class="mobile-nav-link block text-lg font-medium">Galerie</a>
+            <a href="#contact" class="mobile-nav-link block text-lg font-bold text-secondary"> Nous Contacter</a>
+        </div>
+    </nav>
+
+    <!-- 
+        ================================================================
+        SECTION : ACCUEIL
+        ================================================================
+    -->
+    <section id="accueil" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-primary pt-32 text-center text-left md:text-center">
+        <div class="absolute inset-0 z-0">
+            <img src="image/acceuil.gif" alt="OBTS Animation" class="w-full h-full object-cover opacity-30">
+            <div class="absolute inset-0 bg-gradient-to-b from-primary/60 via-transparent to-primary/80"></div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto px-4 relative z-10 space-y-6 md:space-y-10 animate-fade-in">
+            <h1 class="text-3xl md:text-7xl font-extrabold text-white leading-tight uppercase">
+                OBTS un jour,OBTS pour toujours 
+            </h1>
+            <p class="text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+                Transport, déménagement,aménagement sans stress et assainissement. OBTS simplifie votre quotidien,que vous soyez une entréprise ou particulier.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+                <a href="#services" class="bg-secondary text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl magnet">
+                    Nos Services
+                </a>
+                <a href="#contact" class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-2xl font-bold hover:bg-white/20 transition magnet">
+                    Nous contacter
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : SERVICES
+        ================================================================
+    -->
+    <section id="services" class="py-16 md:py-24 bg-white overflow-hidden reveal text-left">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-end mb-10 md:mb-16 relative z-10 text-left">
+                <div class="text-left">
+                    <h2 class="text-3xl md:text-5xl font-bold text-primary italic text-left uppercase">Nos services</h2>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="scrollSlider('services-slider', 'left')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-secondary hover:text-white transition magnet bg-white text-center"><i class="fas fa-chevron-left"></i></button>
+                    <button onclick="scrollSlider('services-slider', 'right')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-secondary hover:text-white transition magnet bg-white text-center"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div id="services-slider" class="slider-container no-scrollbar text-left">
+                <div class="slider-card p-8 md:p-10 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white transition-all magnet text-left">
+                    <i class="fas fa-truck text-3xl text-secondary mb-6 text-left"></i>
+                    <h4 class="text-lg font-bold mb-3 text-primary uppercase text-left">Transports</h4>
+                    <p class="text-gray-500 text-sm italic text-left">Sécurité totale pour vos meubles et marchandises au Congo.</p>
+                </div>
+                <div class="slider-card p-8 md:p-10 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white transition-all magnet text-left">
+                    <i class="fas fa-box-open text-3xl text-secondary mb-6 text-left"></i>
+                    <h4 class="text-lg font-bold mb-3 text-primary uppercase text-left">Déménagement</h4>
+                    <h5 class="text-lg font-bold mb-3 text-primary uppercase text-left">  Aménagement</h5>
+                    <p class="text-gray-500 text-sm italic text-left">Service professionnel pour entreprises et particuliers.</p>
+                </div>
+                <div class="slider-card p-8 md:p-10 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white transition-all magnet text-left text-left">
+                    <i class="fas fa-hand-sparkles text-3xl text-secondary mb-6 text-left"></i>
+                    <h4 class="text-lg font-bold mb-3 text-primary uppercase text-left">Assainissement</h4>
+                    <p class="text-gray-500 text-sm italic text-left text-left">Vidange de fosses et nettoyage industriel complet.</p>
+                </div>
+                <div class="slider-card p-8 md:p-10 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white transition-all magnet text-left text-left">
+                    <i class="fas fa-bolt text-3xl text-secondary mb-6 text-left"></i>
+                    <h4 class="text-lg font-bold mb-3 text-primary uppercase text-left">Livraison Express</h4>
+                    <p class="text-gray-500 text-sm italic text-left text-left">Distribution rapide de vos colis sur toute l'étendue.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : GALERIE (37 IMAGES AVEC ZOOM)
+        ================================================================
+    -->
+    <section id="galerie" class="py-16 md:py-24 bg-gray-50 border-y border-gray-100 reveal text-left">
+        <div class="max-w-7xl mx-auto px-4 text-left">
+            <div class="flex justify-between items-end mb-10 md:mb-16 relative z-10 text-left">
+                <div class="text-left text-left text-left">
+                    <h2 class="text-secondary font-bold uppercase tracking-widest text-xs md:text-sm mb-2 text-left uppercase text-left">Portfolio</h2>
+                    <h3 class="text-3xl md:text-5xl font-bold text-primary italic uppercase text-left">Réalisations sur leTerrain</h3>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="scrollSlider('gallery-slider', 'left')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-secondary hover:text-white transition magnet bg-white text-center"><i class="fas fa-chevron-left"></i></button>
+                    <button onclick="scrollSlider('gallery-slider', 'right')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-secondary hover:text-white transition magnet bg-white text-center"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div id="gallery-slider" class="slider-container no-scrollbar text-left text-left">
+                <!-- 37 images jpeg avec Zoom -->
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left">
+                    <img src="image/image1.jpeg" class="w-full h-full object-cover" loading="lazy">
+                </div>
+                <!-- ... Image 2 à 37 (Structure identique) -->
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left"><img src="image/image2.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left"><img src="image/image3.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left"><img src="image/image4.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left"><img src="image/image5.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left"><img src="image/image6.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left"><img src="image/image7.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left"><img src="image/image8.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left"><img src="image/image9.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image10.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <!-- ... Image 11 à 37 -->
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image11.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image12.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image13.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image14.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image15.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image16.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image17.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image18.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image19.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image20.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image21.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image22.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image23.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image24.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image25.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image26.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image27.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image28.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image29.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image30.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image31.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image32.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image33.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image34.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image35.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image36.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="image/image37.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : TÉMOIGNAGES (ZOOM AU SURVOL)
+        ================================================================
+    -->
+    <section id="testimonials" class="py-16 md:py-24 bg-white overflow-hidden reveal text-left">
+        <div class="max-w-7xl mx-auto px-4 text-left">
+            <div class="flex justify-between items-end mb-10 md:mb-16 relative z-10 text-left">
+                <div class="text-left text-left">
+                    <h2 class="text-secondary font-bold uppercase tracking-widest text-xs md:text-sm mb-2 text-left uppercase text-left">Avis clients</h2>
+                    <h3 class="text-3xl md:text-5xl font-bold text-primary italic uppercase text-left">Ils nous font confiance</h3>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="scrollSlider('testimonials-slider', 'left')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-secondary hover:text-white transition magnet bg-white text-center"><i class="fas fa-chevron-left text-left"></i></button>
+                    <button onclick="scrollSlider('testimonials-slider', 'right')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-secondary hover:text-white transition magnet bg-white text-center"><i class="fas fa-chevron-right text-left"></i></button>
+                </div>
+            </div>
+
+            <div id="testimonials-slider" class="slider-container no-scrollbar text-left text-left">
+                <!-- Avis clients congolais -->
+                <div class="slider-card p-8 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl hover:scale-105 transition-all duration-500 magnet flex flex-col justify-between text-left">
+                    <div>
+                        <div class="flex text-secondary mb-4 text-xs text-left"><i class="fas fa-star text-left"></i><i class="fas fa-star text-left"></i><i class="fas fa-star text-left"></i><i class="fas fa-star text-left"></i><i class="fas fa-star text-left"></i></div>
+                        <p class="text-gray-600 italic leading-relaxed text-sm text-left">"Un déménagement sans stress de Pointe-Noire à Brazzaville. L'équipe a été très soignée. Merci à OBTS Congo !"</p>
+                    </div>
+                    <div class="mt-8 border-t pt-6 text-left">
+                        <p class="font-bold text-primary text-left text-left">Mabiala Mavoungou</p>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest text-left text-left">Particulier</p>
+                    </div>
+                </div>
+                <div class="slider-card p-8 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl hover:scale-105 transition-all duration-500 magnet flex flex-col justify-between text-left text-left">
+                    <div>
+                        <div class="flex text-secondary mb-4 text-xs text-left text-left"><i class="fas fa-star text-left text-left"></i><i class="fas fa-star text-left text-left"></i><i class="fas fa-star text-left text-left"></i><i class="fas fa-star text-left text-left"></i><i class="fas fa-star text-left text-left"></i></div>
+                        <p class="text-gray-600 italic leading-relaxed text-sm text-left text-left text-left">"Service d'assainissement impeccable pour nos bureaux à Ngoyo. Travail propre, rapide et professionnel."</p>
+                    </div>
+                    <div class="mt-8 border-t border-gray-200 pt-6 text-left text-left text-left">
+                        <p class="font-bold text-primary text-left text-left text-left">Bérénice Makosso</p>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest text-xs text-left text-left text-left">Gérante</p>
+                    </div>
+                </div>
+                <!-- Dieudonné Louzolo (POINTE-NOIRE + MACHINES LOURDES) -->
+                <div class="slider-card p-8 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl hover:scale-105 transition-all duration-500 magnet flex flex-col justify-between text-left">
+                    <div>
+                        <div class="flex text-secondary mb-4 text-xs text-left text-left text-left"><i class="fas fa-star text-left text-left"></i><i class="fas fa-star text-left text-left"></i><i class="fas fa-star text-left text-left"></i><i class="fas fa-star text-left text-left"></i><i class="fas fa-star text-left text-left"></i></div>
+                        <p class="text-gray-600 italic leading-relaxed text-sm text-left text-left text-left text-left">"Professionnels du transport à Pointe-Noire. Manutention parfaite de nos machines lourdes."</p>
+                    </div>
+                    <div class="mt-8 border-t pt-6 text-left text-left text-left text-left">
+                        <p class="font-bold text-primary text-left text-left text-left text-left text-left">Dieudonné Louzolo</p>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest text-xs text-left text-left text-left text-left">Entrepreneur</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : CONTACT (10 SERVICES)
+        ================================================================
+    -->
+    <section id="contact" class="py-16 md:py-24 bg-white reveal text-left">
+        <div class="max-w-4xl mx-auto px-4 text-left text-left">
+            <div class="bg-primary rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden text-white border border-white/5 text-left text-left">
+                <div class="absolute top-0 right-0 w-80 h-80 bg-secondary opacity-10 rounded-full -mr-40 -mt-40 text-left text-left text-left"></div>
+                <h3 class="text-3xl md:text-4xl font-bold text-center mb-10 relative z-10 italic uppercase text-center text-left text-left">Contacter nous</h3>
+                
+                <form action="https://api.web3forms.com/submit" method="POST" id="contact-form" class="space-y-6 md:space-y-8 relative z-10 text-left text-left text-left">
+                    <input type="hidden" name="access_key" value="VOTRE_CLE_ICI">
+                    <input type="hidden" name="subject" value="Demande OBTS">
+
+                    <div class="grid md:grid-cols-2 gap-6 text-left text-left">
+                        <div class="space-y-2 text-left text-left text-left">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-4 text-left text-left text-left">Votre Nom</label>
+                            <input type="text" name="name" id="nom" required placeholder="Votre nom" class="w-full px-6 py-4 rounded-3xl border-none outline-none magnet bg-white/5 focus:bg-white/10 transition text-sm text-left">
+                        </div>
+                        <div class="space-y-2 text-left text-left">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-4 text-left text-left text-left">Email</label>
+                            <input type="email" name="email" id="email" required placeholder="votre@email.com" class="w-full px-6 py-4 rounded-3xl border-none outline-none magnet bg-white/5 focus:bg-white/10 transition text-sm text-left">
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 text-left text-left">
+                        <div class="space-y-2 text-left text-left text-left">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-4 text-left text-left text-left text-left">Téléphone</label>
+                            <input type="tel" name="phone" id="phone" placeholder="Votre numéro" class="w-full px-6 py-4 rounded-3xl border-none outline-none magnet bg-white/5 focus:bg-white/10 transition text-sm text-left text-left">
+                        </div>
+                        <div class="space-y-2 text-left text-left text-left">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-4 text-left text-left text-left text-left">Besoin Spécifique</label>
+                            <div class="relative text-left">
+                                <select name="service" id="service" required class="w-full px-6 py-4 rounded-3xl border-none outline-none magnet bg-white/5 focus:bg-white/10 transition appearance-none cursor-pointer text-sm text-left text-left text-left">
+                                    <option value="" disabled selected class="bg-primary text-left text-left">Veuillez sélectionner</option>
+                                    <optgroup label="Transports" class="bg-primary text-secondary text-left text-left text-left">
+                                        <option value="transport">Transport</option>
+                                        <option value="manutention">Manutention </option>
+                                        <option value="livraison">Livraison express</option>
+                                        <option value="Travaux bâtiments">Travaux de construstion</option>
+                                    </optgroup>
+                                    <optgroup label="Aménagement/Déménagement" class="bg-primary text-secondary text-left text-left text-left">
+                                        <option value="demenagement">Déménagement</option>
+                                        <option value="Aménagement">Aménagement</option>
+                                        <option value="emballage">Emballage</option>
+                                        <option value="amenagement">Aménagement d'espace</option>
+                                    </optgroup>
+                                    <optgroup label="Entretien" class="bg-primary text-secondary text-left text-left text-left">
+                                        <option value="assainissement">Assainissement & Nettoyage</option>
+                                        <option value="debarras">Débarras & Évacuation</option>
+                                    </optgroup>
+                                     <optgroup label="Autres" class="bg-primary text-secondary text-left text-left text-left">
+                                       <option value="autres">autre</option>
+                                    </optgroup>
+                                </select>
+                                <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 text-left text-left">
+                                    <i class="fas fa-chevron-down text-xs text-left"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 text-left text-left text-left text-left">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-4 text-left text-left text-left">Message</label>
+                        <textarea name="message" id="message" required placeholder="Détails de votre demande..." rows="4" class="w-full px-6 py-4 rounded-3xl border-none outline-none magnet bg-white/5 focus:bg-white/10 transition text-sm text-left text-left"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 text-left text-left text-left text-left">
+                        <button type="button" onclick="sendToWhatsApp()" class="bg-green-500 text-white font-black py-5 rounded-3xl shadow-xl hover:bg-green-600 transition-all text-xs uppercase tracking-widest flex items-center justify-center text-center">
+                            <i class="fab fa-whatsapp mr-2 text-xl text-center text-center text-center"></i> WhatsApp
+                        </button>
+                        <button type="submit" class="bg-secondary text-white font-black py-5 rounded-3xl shadow-xl hover:brightness-110 transition-all text-xs uppercase tracking-widest flex items-center justify-center text-center">
+                            <i class="fas fa-envelope mr-2 text-xl text-center text-center text-center text-center"></i> Envoyer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : PARTENAIRES (STATIC & TITRE JAUNE)
+        ================================================================
+    -->
+    <section class="py-12 md:py-20 bg-gray-50 border-y border-gray-100 reveal text-left">
+        <div class="max-w-7xl mx-auto px-4 text-left text-left">
+            <h4 class="text-secondary font-black uppercase text-2xl md:text-4xl tracking-widest text-center mb-12 text-center text-center">Nos partenaires de confiance</h4>
+            <div class="flex flex-wrap justify-center items-center gap-10 md:gap-24 text-left">
+                <div class="flex items-center grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition duration-500 group text-left text-left text-left">
+                    <img src="image/MUCODEC.png" alt="MUCODEC" class="h-10 md:h-16 w-auto" onerror="this.nextElementSibling.style.display='block';this.style.display='none'">
+                    <span class="text-xl md:text-3xl font-black text-secondary hidden text-left text-left text-left text-left">MUCODEC</span>
+                </div>
+                <div class="flex items-center grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition duration-500 group text-left text-left text-left">
+                    <img src="image/CEC.png" alt="CEC" class="h-10 md:h-16 w-auto" onerror="this.nextElementSibling.style.display='block';this.style.display='none'">
+                    <span class="text-xl md:text-3xl font-black text-secondary hidden text-left text-left text-left text-left">CEC</span>
+                </div>
+                <div class="flex items-center grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition duration-500 group text-left text-left text-left text-left text-left">
+                    <img src="image/DANGOTE.png" alt="DANGOTE" class="h-10 md:h-16 w-auto" onerror="this.nextElementSibling.style.display='block';this.style.display='none'">
+                    <span class="text-xl md:text-3xl font-black text-secondary hidden text-left text-left text-left text-left text-left">DANGOTE</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : FOOTER
+        ================================================================
+    -->
+    <footer class="bg-primary py-10 text-white border-t border-white/5 reveal text-left">
+        <div class="max-w-7xl mx-auto px-4 text-left text-left text-left text-left text-left">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 text-left text-left text-left">
+                <div class="space-y-5 text-left text-left text-left">
+                    <div class="flex items-center space-x-4 text-left text-left text-left">
+                        <img src="image/logo.png" alt="OBTS Logo" class="h-25 md:h-30 w-auto object-contain rounded" onerror="this.style.display='none'">
+                        <span class="text-xl font-bold italic uppercase text-left text-left text-left text-left">
+                    </div>
+                    <p class="text-gray-400 text-xs italic text-left text-left text-left">OBTS,un jour,OBTS pour toujours.</p>
+                    <div class="flex space-x-4 pt-2 text-left text-left text-left text-left">
+                        <a href="#" class="text-gray-400 hover:text-white transition magnet text-left text-left text-left"><i class="fab fa-facebook-f text-left"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition magnet text-left text-left text-left"><i class="fab fa-tiktok text-left text-left"></i></a>
+                        <a href="https://wa.me/242066707014" target="_blank" class="text-gray-400 hover:text-white transition magnet text-left text-left text-left text-left"><i class="fab fa-whatsapp text-left text-left text-left"></i></a>
+                    </div>
+                </div>
+
+                <div class="text-left text-left text-left text-left">
+                    <h4 class="text-[10px] font-black uppercase text-secondary mb-4 text-left text-left text-left">Navigation</h4>
+                    <ul class="space-y-2 text-gray-400 text-xs italic text-left text-left text-left text-left">
+                        <li><a href="#accueil" class="hover:text-white transition text-left text-left">Accueil</a></li>
+                        <li><a href="#services" class="hover:text-white transition text-left text-left">Nos Services</a></li>
+                        <li><a href="#galerie" class="hover:text-white transition text-left text-left text-left">Galerie</a></li>
+                    </ul>
+                </div>
+
+                <div class="text-left text-left text-left text-left text-left">
+                    <h4 class="text-[10px] font-black uppercase text-secondary mb-4 text-left text-left text-left text-left">Prestations</h4>
+                    <ul class="space-y-2 text-gray-400 text-xs italic text-left text-left text-left text-left text-left">
+                        <li>Transports</li>
+                        <li>Déménagement</li>
+                        <li>Aménagement</li>
+                        <li>Livraison Express</li>
+                        <li>Assainissement</li>
+                        <li>Construction Bâtiment</li>
+                        
+                    </ul>
+                </div>
+
+                <div class="text-left text-left text-left text-left text-left text-left">
+                    <h4 class="text-[10px] font-black uppercase text-secondary mb-4 text-left text-left text-left text-left">Contact direct</h4>
+                    <div class="text-gray-400 text-xs leading-relaxed text-left text-left text-left text-left text-left">
+                        <p class="text-white font-bold mb-1 text-left text-left">+242 06 670 70 14 / 04 036 95 95</p>
+                        <p class="text-secondary mb-1 italic text-left text-left">infos@obts-congo.com</p>
+                        <p class="text-left text-left">Lun-Ven : 07h30-18h30 | Sam : 14h30</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[9px] text-gray-600 uppercase tracking-widest text-left text-left">
+                <p class="text-left text-left text-left text-left text-left text-left text-left">&copy; 2026 OBTS. All rights reserved.</p>
+                <a href="https://www.obts-congo.com" class="hover:text-white transition text-xs text-center text-center text-center text-center text-center">www.obts-congo.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 
+        ================================================================
+        CHATBOT : TOUTES LES INFORMATIONS ENTREPRISE (FIXED)
+        ================================================================
+    -->
+    <div class="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[100] text-left">
+        <div id="chatbot-window" class="absolute bottom-20 md:bottom-24 right-0 rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col w-72 md:w-80">
+            <!-- Header du Bot -->
+            <div class="bg-primary/90 p-4 text-white flex items-center justify-between text-left text-left">
+                <div class="flex items-center space-x-3 text-left">
+                    <div class="w-8 h-8 bg-secondary rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-robot text-sm animate-bounce-slow text-left"></i>
+                    </div>
+                    <div class="text-left text-left">
+                        <p class="font-bold text-xs text-left">Assistant OBTS</p>
+                        <p class="text-[8px] text-accent uppercase font-black text-left">En ligne</p>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="hover:text-secondary p-2 text-center text-center"><i class="fas fa-times text-center text-center"></i></button>
+            </div>
+
+            <!-- Zone de messages -->
+            <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-4 text-xs no-scrollbar text-left text-left text-left">
+                <div class="bg-white/90 p-3 rounded-2xl rounded-tl-none shadow-sm text-gray-700 italic text-left">
+                    Bonjour ! Je suis l'assistant **OBTS**. Comment puis-je vous aider aujourd'hui ?
+                </div>
+            </div>
+
+            <!-- Menu de questions rapides -->
+            <div class="p-3 bg-white/60 border-t border-gray-100 flex flex-wrap gap-2 text-left text-left">
+                <button onclick="askBot('services')" class="text-[9px] text-left px-3 py-1.5 bg-gray-50 hover:bg-secondary hover:text-white rounded-lg transition font-bold uppercase">Nos Services ?</button>
+                <button onclick="askBot('adresse')" class="text-[9px] text-left px-3 py-1.5 bg-gray-50 hover:bg-secondary hover:text-white rounded-lg transition font-bold uppercase">Adresse ?</button>
+                <button onclick="askBot('contact')" class="text-[9px] text-left px-3 py-1.5 bg-gray-50 hover:bg-secondary hover:text-white rounded-lg transition font-bold uppercase">Contact ?</button>
+                <button onclick="askBot('horaires')" class="text-[9px] text-left px-3 py-1.5 bg-gray-50 hover:bg-secondary hover:text-white rounded-lg transition font-bold uppercase">Horaires ?</button>
+                <button onclick="askBot('partenaires')" class="text-[9px] text-left px-3 py-1.5 bg-gray-50 hover:bg-secondary hover:text-white rounded-xl transition font-bold uppercase">Partenaires ?</button>
+            </div>
+        </div>
+
+        <button id="chatbot-launcher" onclick="toggleChat()" class="w-14 h-14 md:w-20 md:h-20 bg-secondary text-white rounded-[2rem] shadow-2xl flex items-center justify-center hover:scale-110 transition-transform text-center text-center">
+            <i class="fas fa-comments text-xl md:text-3xl text-center text-center text-center"></i>
+        </button>
+    </div>
+
+    <!-- 
+        ================================================================
+        LOGIQUE JAVASCRIPT ROBUSTE
+        ================================================================
+    -->
+    <script>
+        // CURSEUR
+        const dot = document.getElementById('cursor-dot');
+        const outline = document.getElementById('cursor-outline');
+        if (window.innerWidth >= 1024) {
+            document.addEventListener('mousemove', (e) => {
+                dot.style.left = e.clientX + 'px';
+                dot.style.top = e.clientY + 'px';
+                setTimeout(() => {
+                    outline.style.left = e.clientX + 'px';
+                    outline.style.top = e.clientY + 'px';
+                }, 40);
+            });
+        }
+
+        // REVEAL ON SCROLL
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+                else entry.target.classList.remove('active');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // CHATBOT : BASE DE DONNÉES COMPLÈTE
+        function toggleChat() { document.getElementById('chatbot-window').classList.toggle('active'); }
+        
+        const responses = {
+            services: "Nous avons plusieurs services : Transports, Manutention, Livraison express,Déménagement Aménagement, Emballage,Assainissement, Débarras.",
+            adresse: "Nous sommes situés à Pointe-Noire (Congo), Arrondissement 06 Ngoyo, Route de la frontière, arrêt Tchivoundoulou.",
+            contact: "Appelez-nous au +242 06 670 70 14 ou au +242 04 036 95 95. Email : infos@obts-congo.com",
+            horaires: "Lun-Ven : 07h30-18h30 | Sam : 07h30-14h30. Fermé le dimanche.",
+            partenaires: "Nos partenaires de confiance incluent : MUCODEC, CEC et DANGOTE."
+        };
+
+        function askBot(key) {
+            const container = document.getElementById('chat-messages');
+            const questionText = {
+                services: "Nos Services ?", adresse: "Votre Adresse ?", contact: "Comment vous contacter ?", horaires: "Quels sont vos horaires ?", partenaires: "Vos Partenaires ?"
+            };
+
+            // Ajout du message utilisateur
+            const userMsg = document.createElement('div');
+            userMsg.className = "bg-secondary text-white p-3 rounded-2xl rounded-tr-none shadow-sm self-end ml-8 text-right font-bold text-left";
+            userMsg.innerText = questionText[key];
+            container.appendChild(userMsg);
+
+            // Simulation de réponse du Bot
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = "bg-white/90 p-3 rounded-2xl rounded-tl-none shadow-sm text-gray-700 mr-8 border border-gray-100 italic animate-fade-in text-left text-left";
+                botMsg.innerHTML = responses[key];
+                container.appendChild(botMsg);
+                container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+            }, 400);
+        }
+
+        // NAVIGATION & MOBILE
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+        document.addEventListener('click', () => { if(mobileMenu) mobileMenu.classList.add('hidden'); });
+
+        // SLIDER UNIVERSEL
+        window.scrollSlider = function(id, direction) {
+            const slider = document.getElementById(id);
+            if (!slider) return;
+            const card = slider.querySelector('.slider-card');
+            const scrollAmount = card ? card.offsetWidth + 24 : slider.clientWidth * 0.8;
+            slider.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+        };
+
+        // FORMULAIRE WHATSAPP
+        function sendToWhatsApp() {
+            const nom = document.getElementById('nom').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const service = document.getElementById('service').value;
+            const message = document.getElementById('message').value;
+            if(!nom || !email || !service || !message) {
+                const toast = document.getElementById('custom-toast');
+                toast.style.opacity = "1";
+                setTimeout(() => toast.style.opacity = "0", 3000);
+                return;
+            }
+            let text = `*OBTS: NOUVELLE DEMANDE*\n*Nom :* ${nom}\n*Email :* ${email}\n*Tel :* ${phone}\n*Besoin :* ${service}\n*Message :* ${message}`;
+            window.open(`https://wa.me/242066707014?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        const magnets = document.querySelectorAll('.magnet, button, a, .slider-card, select, input, textarea');
+        magnets.forEach(m => {
+            m.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            m.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+    </script>
+</body>
+</html>
