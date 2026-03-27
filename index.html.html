@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <!-- 
+        ================================================================
+        SECTION : CONFIGURATION & SEO
+        ================================================================
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBTS | Excellence en Transport, Déménagement & Assainissement</title>
+    
+    <meta name="description" content="OBTS: Leader du transport de biens, déménagement, assainissement et logistique. Services professionnels de manutention et livraison express.">
+    
+    <!-- Importations de bibliothèques externes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F172A',
+                        secondary: '#F59E0B', // Jaune OBTS
+                        accent: '#10B981',
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    animation: {
+                        'bounce-slow': 'bounce 2s infinite',
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        /* Optimisation universelle */
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+        @media (min-width: 1024px) {
+            html, body { cursor: none; }
+            #cursor-dot, #cursor-outline { display: block; }
+        }
+        @media (max-width: 1023px) {
+            #cursor-dot, #cursor-outline { display: none; }
+            html, body { cursor: auto; }
+        }
+
+        /* --- REVEAL ANIMATION --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- CURSEUR CUSTOM --- */
+        #cursor-dot {
+            width: 8px; height: 8px; background-color: #F59E0B;
+            position: fixed; border-radius: 50%; z-index: 10000;
+            pointer-events: none; transform: translate(-50%, -50%);
+        }
+        #cursor-outline {
+            width: 40px; height: 40px; border: 2px solid rgba(245, 158, 11, 0.5);
+            position: fixed; border-radius: 50%; z-index: 9999;
+            pointer-events: none; transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s;
+        }
+
+        /* --- NAVIGATION --- */
+        .dropdown:hover .dropdown-menu { display: block; }
+        .dropdown-menu { display: none; }
+        section { scroll-margin-top: 8rem; }
+
+        .slider-container {
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            gap: 1.5rem;
+            padding-bottom: 2rem;
+        }
+        
+        .slider-card {
+            flex: 0 0 auto !important; 
+            width: 300px;
+            max-width: 85vw;
+        }
+
+        /* --- CHATBOT UI --- */
+        #chatbot-launcher {
+            opacity: 0.7;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #chatbot-launcher:hover { opacity: 1; transform: scale(1.1); }
+        
+        #chatbot-window {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        #chatbot-window.active { 
+            transform: translateY(0) scale(1); 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+
+        /* --- MODAL --- */
+        #service-modal {
+            transition: all 0.3s ease-out;
+            pointer-events: none;
+            opacity: 0;
+        }
+        #service-modal.active {
+            pointer-events: auto;
+            opacity: 1;
+        }
+        #service-modal-content {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.9);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        #service-modal.active #service-modal-content {
+            transform: scale(1);
+        }
+
+        .gallery-item img {
+            transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900 font-sans overflow-x-hidden text-left">
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+
+    <div id="custom-toast" class="fixed top-32 left-1/2 -translate-x-1/2 z-[100] bg-red-600 text-white px-6 py-3 rounded-2xl shadow-2xl opacity-0 pointer-events-none transition-opacity text-sm text-center">
+        Merci de remplir tous les champs obligatoires.
+    </div>
+
+    <!-- 
+        ================================================================
+        SECTION : NAVIGATION
+        ================================================================
+    -->
+    <nav class="fixed w-full z-[60] bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
+        <div class="max-w-full mx-auto px-4 sm:px-8">
+            <div class="flex justify-between h-28 md:h-36 items-center">
+                
+                <!-- GAUCHE : LOGO SEUL -->
+                <div class="flex-shrink-0 flex items-center">
+                    <img src="image/logo.png" alt="OBTS Logo Left" class="h-28 md:h-40 w-auto object-contain" onerror="this.src='https://via.placeholder.com/250?text=LOGO+OBTS'">
+                </div>
+                
+                <!-- CENTRE : BOUTONS ÉLARGIS -->
+                <div class="hidden md:flex flex-1 justify-between items-center px-12 lg:px-24">
+                    <a href="#accueil" class="px-8 hover:text-secondary font-bold transition magnet text-lg flex items-center h-full">Accueil</a>
+                    
+                    <button onclick="openServiceModal('about')" class="px-8 hover:text-secondary font-bold transition magnet text-lg whitespace-nowrap flex items-center h-full">À propos de nous</button>
+                    
+                    <div class="relative dropdown flex items-center h-full px-8">
+                        <button class="hover:text-secondary font-bold transition magnet flex items-center text-lg focus:outline-none">
+                            Nos services <i class="fas fa-chevron-down ml-2 text-[10px]"></i>
+                        </button>
+                        <div class="dropdown-menu absolute top-full left-1/2 -translate-x-1/2 w-72 bg-white shadow-2xl rounded-2xl py-4 border border-gray-100 animate-fade-in text-left">
+                            <a href="#services" onclick="openServiceModal('transport')" class="block px-6 py-3 text-sm hover:bg-gray-50 hover:text-secondary italic font-medium transition-colors border-b border-gray-50">Transports</a>
+                            <a href="#services" onclick="openServiceModal('demenagement')" class="block px-6 py-3 text-sm hover:bg-gray-50 hover:text-secondary italic font-medium transition-colors border-b border-gray-50">Déménagement & Aménagement</a>
+                            <a href="#services" onclick="openServiceModal('assainissement')" class="block px-6 py-3 text-sm hover:bg-gray-50 hover:text-secondary italic font-medium transition-colors border-b border-gray-50">Assainissement & Hygiène</a>
+                            <a href="#services" onclick="openServiceModal('livraison')" class="block px-6 py-3 text-sm hover:bg-gray-50 hover:text-secondary italic font-medium transition-colors border-b border-gray-50">Livraison Express</a>
+                            <a href="#services" onclick="openServiceModal('construction')" class="block px-6 py-3 text-sm hover:bg-gray-50 hover:text-secondary italic font-medium transition-colors">Travaux de Construction</a>
+                        </div>
+                    </div>
+                    
+                    <a href="#galerie" class="px-8 hover:text-secondary font-bold transition magnet text-lg flex items-center h-full">Galerie</a>
+                    <a href="#contact" class="px-10 bg-secondary text-white py-3 rounded-xl font-black hover:bg-primary transition magnet shadow-lg shadow-orange-200 whitespace-nowrap flex items-center">Nous Contacter</a>
+                </div>
+
+                <!-- DROITE : LOGO SEUL -->
+                <div class="flex-shrink-0 flex items-center">
+                    <div class="hidden md:block">
+                        <img src="image/logo.png" alt="OBTS Logo Right" class="h-28 md:h-40 w-auto object-contain" onerror="this.src='https://via.placeholder.com/250?text=LOGO+OBTS'">
+                    </div>
+                    <div class="md:hidden ml-4">
+                        <button id="mobile-menu-button" class="text-primary p-2 focus:outline-none">
+                            <i class="fas fa-bars text-3xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t p-6 space-y-4 shadow-xl text-left">
+            <a href="#accueil" class="mobile-nav-link block text-lg font-medium">Accueil</a>
+            <button onclick="openServiceModal('about')" class="mobile-nav-link block text-lg font-medium text-left w-full">À propos de nous</button>
+            <div class="py-2 space-y-2 border-l-2 border-secondary/20 pl-4">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Nos services</p>
+                <button onclick="openServiceModal('transport')" class="mobile-nav-link block text-base font-medium py-1 text-left w-full">Transports</button>
+                <button onclick="openServiceModal('demenagement')" class="mobile-nav-link block text-base font-medium py-1 text-left w-full">Déménagement & Aménagement</button>
+                <button onclick="openServiceModal('assainissement')" class="mobile-nav-link block text-base font-medium py-1 text-left w-full">Assainissement</button>
+                <button onclick="openServiceModal('livraison')" class="mobile-nav-link block text-base font-medium py-1 text-left w-full">Livraison Express</button>
+                <button onclick="openServiceModal('construction')" class="mobile-nav-link block text-base font-medium py-1 text-left w-full">Construction</button>
+            </div>
+            <a href="#galerie" class="mobile-nav-link block text-lg font-medium">Galerie</a>
+            <a href="#contact" class="mobile-nav-link block text-lg font-bold text-secondary"> Nous Contacter</a>
+        </div>
+    </nav>
+
+    <!-- 
+        ================================================================
+        SECTION : ACCUEIL
+        ================================================================
+    -->
+    <section id="accueil" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-primary pt-32 text-left">
+        <div class="absolute inset-0 z-0">
+            <img src="image/acceuil.gif" alt="OBTS Animation" class="w-full h-full object-cover opacity-30">
+            <div class="absolute inset-0 bg-gradient-to-b from-primary/60 via-transparent to-primary/80"></div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto px-4 relative z-10 space-y-6 md:space-y-10 animate-fade-in md:text-center">
+            <h1 class="text-3xl md:text-7xl font-extrabold text-white leading-tight">
+                OBTS un jour, OBTS pour toujours 
+            </h1>
+            <p class="text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+                Transport, déménagement, aménagement sans stress et assainissement. OBTS simplifie votre quotidien, que vous soyez une entreprise ou particulier.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+                <a href="#services" class="bg-secondary text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl magnet text-center">
+                    Nos Services
+                </a>
+                <a href="#contact" class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-2xl font-bold hover:bg-white/20 transition magnet text-center">
+                    Nous contacter
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : SERVICES (GRILLE VERTICALE)
+        ================================================================
+    -->
+    <section id="services" class="py-16 md:py-24 bg-white reveal text-left">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="mb-10 md:mb-16 relative z-10">
+                <h2 class="text-3xl md:text-5xl font-bold text-primary italic uppercase">Nos services</h2>
+                <div class="w-20 h-1.5 bg-secondary rounded-full mt-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                
+                <div onclick="openServiceModal('transport')" class="p-8 md:p-10 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl transition-all duration-500 magnet cursor-pointer group">
+                    <i class="fas fa-truck text-4xl text-secondary mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="text-xl font-bold mb-4 text-primary uppercase">Transports</h4>
+                    <p class="text-gray-500 text-sm italic leading-relaxed">Sécurité totale pour vos meubles et marchandises.</p>
+                    <div class="mt-6 flex items-center text-secondary font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all">
+                        <span>En savoir plus</span>
+                        <i class="fas fa-plus ml-2"></i>
+                    </div>
+                </div>
+
+                <div onclick="openServiceModal('demenagement')" class="p-8 md:p-10 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl transition-all duration-500 magnet cursor-pointer group">
+                    <i class="fas fa-box-open text-4xl text-secondary mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="text-xl font-bold mb-4 text-primary uppercase">Déménagement / Aménagement</h4>
+                    <p class="text-gray-500 text-sm italic leading-relaxed">Service professionnel pour entreprises et particuliers.</p>
+                    <div class="mt-6 flex items-center text-secondary font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all">
+                        <span>En savoir plus</span>
+                        <i class="fas fa-plus ml-2"></i>
+                    </div>
+                </div>
+
+                <div onclick="openServiceModal('assainissement')" class="p-8 md:p-10 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl transition-all duration-500 magnet cursor-pointer group">
+                    <i class="fas fa-hand-sparkles text-4xl text-secondary mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="text-xl font-bold mb-4 text-primary uppercase">Assainissement</h4>
+                    <p class="text-gray-500 text-sm italic leading-relaxed">Vidange de fosses et nettoyage industriel complet.</p>
+                    <div class="mt-6 flex items-center text-secondary font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all">
+                        <span>En savoir plus</span>
+                        <i class="fas fa-plus ml-2"></i>
+                    </div>
+                </div>
+
+                <div onclick="openServiceModal('livraison')" class="p-8 md:p-10 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl transition-all duration-500 magnet cursor-pointer group">
+                    <i class="fas fa-bolt text-4xl text-secondary mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="text-xl font-bold mb-4 text-primary uppercase">Livraison Express</h4>
+                    <p class="text-gray-500 text-sm italic leading-relaxed">Distribution rapide de vos colis sur toute l'étendue.</p>
+                    <div class="mt-6 flex items-center text-secondary font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all">
+                        <span>En savoir plus</span>
+                        <i class="fas fa-plus ml-2"></i>
+                    </div>
+                </div>
+
+                <div onclick="openServiceModal('construction')" class="p-8 md:p-10 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl transition-all duration-500 magnet cursor-pointer group">
+                    <i class="fas fa-trowel-bricks text-4xl text-secondary mb-6 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="text-xl font-bold mb-4 text-primary uppercase">Travaux de Construction</h4>
+                    <p class="text-gray-500 text-sm italic leading-relaxed">Réalisation et réhabilitation de bâtiments avec expertise.</p>
+                    <div class="mt-6 flex items-center text-secondary font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all">
+                        <span>En savoir plus</span>
+                        <i class="fas fa-plus ml-2"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : GALERIE
+        ================================================================
+    -->
+    <section id="galerie" class="py-16 md:py-24 bg-gray-50 border-y border-gray-100 reveal text-left">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-end mb-10 md:mb-16 relative z-10">
+                <div>
+                    <h2 class="text-secondary font-bold uppercase tracking-widest text-xs md:text-sm mb-2 uppercase">Portfolio</h2>
+                    <h3 class="text-3xl md:text-5xl font-bold text-primary italic uppercase">Réalisations sur le Terrain</h3>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="scrollSlider('gallery-slider', 'left')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-secondary hover:text-white transition magnet bg-white"><i class="fas fa-chevron-left"></i></button>
+                    <button onclick="scrollSlider('gallery-slider', 'right')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-secondary hover:text-white transition magnet bg-white"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div id="gallery-slider" class="slider-container no-scrollbar">
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image1.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image2.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image3.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image4.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image5.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image6.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image7.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image8.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image9.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image10.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image11.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image12.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image13.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image14.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image15.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image16.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image17.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image18.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image20.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image21.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image22.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image23.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image24.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image25.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image26.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image27.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image28.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image29.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image30.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image31.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image32.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image33.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image34.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image35.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image36.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+                <div class="slider-card h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl group gallery-item"><img src="image/image37.jpeg" class="w-full h-full object-cover" loading="lazy"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : TÉMOIGNAGES
+        ================================================================
+    -->
+    <section id="testimonials" class="py-16 md:py-24 bg-white reveal text-left">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-end mb-10 md:mb-16 relative z-10">
+                <div>
+                    <h2 class="text-secondary font-bold uppercase tracking-widest text-xs md:text-sm mb-2 uppercase">Avis clients</h2>
+                    <h3 class="text-3xl md:text-5xl font-bold text-primary italic uppercase">Ils nous font confiance</h3>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="scrollSlider('testimonials-slider', 'left')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-secondary hover:text-white transition magnet bg-white"><i class="fas fa-chevron-left"></i></button>
+                    <button onclick="scrollSlider('testimonials-slider', 'right')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-secondary hover:text-white transition magnet bg-white"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div id="testimonials-slider" class="slider-container no-scrollbar">
+                <div class="slider-card p-8 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl hover:scale-105 transition-all duration-500 magnet flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-secondary mb-4 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        <p class="text-gray-600 italic leading-relaxed text-sm">"Un déménagement sans stress. L'équipe a été très soignée. Merci à OBTS !"</p>
+                    </div>
+                    <div class="mt-8 border-t pt-6">
+                        <p class="font-bold text-primary">Mabiala Mavoungou</p>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest">Particulier</p>
+                    </div>
+                </div>
+                <div class="slider-card p-8 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl hover:scale-105 transition-all duration-500 magnet flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-secondary mb-4 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        <p class="text-gray-600 italic leading-relaxed text-sm">"Service d'assainissement impeccable pour nos bureaux. Travail propre, rapide et professionnel."</p>
+                    </div>
+                    <div class="mt-8 border-t border-gray-200 pt-6">
+                        <p class="font-bold text-primary">Bérénice Makosso</p>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest">Gérante</p>
+                    </div>
+                </div>
+                <div class="slider-card p-8 bg-gray-50 rounded-[2.5rem] border border-transparent hover:border-secondary hover:bg-white hover:shadow-2xl hover:scale-105 transition-all duration-500 magnet flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-secondary mb-4 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        <p class="text-gray-600 italic leading-relaxed text-sm">"Professionnels du transport. Manutention parfaite de nos machines lourdes."</p>
+                    </div>
+                    <div class="mt-8 border-t pt-6">
+                        <p class="font-bold text-primary">Dieudonné Louzolo</p>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest text-xs">Entrepreneur</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : CONTACT
+        ================================================================
+    -->
+    <section id="contact" class="py-16 md:py-24 bg-white reveal text-left">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-primary rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden text-white border border-white/5">
+                <div class="absolute top-0 right-0 w-80 h-80 bg-secondary opacity-10 rounded-full -mr-40 -mt-40"></div>
+                <h3 class="text-3xl md:text-4xl font-bold text-center mb-10 relative z-10 italic uppercase">Nous contacter</h3>
+                
+                <form action="https://api.web3forms.com/submit" method="POST" id="contact-form" class="space-y-6 md:space-y-8 relative z-10">
+                    <input type="hidden" name="access_key" value="VOTRE_CLE_ICI">
+                    <input type="hidden" name="subject" value="Demande OBTS">
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-4">Votre Nom</label>
+                            <input type="text" name="name" id="nom" required placeholder="Votre nom" class="w-full px-6 py-4 rounded-3xl border-none outline-none magnet bg-white/5 focus:bg-white/10 transition text-sm">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-4">Email</label>
+                            <input type="email" name="email" id="email" required placeholder="votre@email.com" class="w-full px-6 py-4 rounded-3xl border-none outline-none magnet bg-white/5 focus:bg-white/10 transition text-sm">
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-4">Téléphone</label>
+                            <input type="tel" name="phone" id="phone" placeholder="Votre numéro" class="w-full px-6 py-4 rounded-3xl border-none outline-none magnet bg-white/5 focus:bg-white/10 transition text-sm">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-4">Besoin Spécifique</label>
+                            <div class="relative">
+                                <select name="service" id="service" required class="w-full px-6 py-4 rounded-3xl border-none outline-none magnet bg-white/5 focus:bg-white/10 transition appearance-none cursor-pointer text-sm">
+                                    <option value="" disabled selected>Veuillez sélectionner</option>
+                                    <optgroup label="Transports" class="bg-primary text-secondary">
+                                        <option value="transport">Transport</option>
+                                        <option value="manutention">Manutention </option>
+                                        <option value="livraison">Livraison express</option>
+                                        <option value="construction">Travaux de construction</option>
+                                    </optgroup>
+                                    <optgroup label="Aménagement/Déménagement" class="bg-primary text-secondary">
+                                        <option value="demenagement">Déménagement</option>
+                                        <option value="emballage">Emballage</option>
+                                        <option value="amenagement">Aménagement d'espace</option>
+                                    </optgroup>
+                                    <optgroup label="Entretien" class="bg-primary text-secondary">
+                                        <option value="assainissement">Assainissement & Nettoyage</option>
+                                        <option value="debarras">Débarras & Évacuation</option>
+                                    </optgroup>
+                                     <optgroup label="Autres" class="bg-primary text-secondary">
+                                       <option value="autres">autre</option>
+                                    </optgroup>
+                                </select>
+                                <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-4">Message</label>
+                        <textarea name="message" id="message" required placeholder="Détails de votre demande..." rows="4" class="w-full px-6 py-4 rounded-3xl border-none outline-none magnet bg-white/5 focus:bg-white/10 transition text-sm"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                        <button type="button" onclick="sendToWhatsApp()" class="bg-green-500 text-white font-black py-5 rounded-3xl shadow-xl hover:bg-green-600 transition-all text-xs uppercase tracking-widest flex items-center justify-center">
+                            <i class="fab fa-whatsapp mr-2 text-xl"></i> WhatsApp
+                        </button>
+                        <button type="submit" class="bg-secondary text-white font-black py-5 rounded-3xl shadow-xl hover:brightness-110 transition-all text-xs uppercase tracking-widest flex items-center justify-center">
+                            <i class="fas fa-envelope mr-2 text-xl"></i> Envoyer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : PARTENAIRES
+        ================================================================
+    -->
+    <section class="py-12 md:py-20 bg-gray-50 border-y border-gray-100 reveal text-left">
+        <div class="max-w-7xl mx-auto px-4">
+            <h4 class="text-secondary font-black uppercase text-2xl md:text-4xl tracking-widest text-center mb-12">Nos partenaires de confiance</h4>
+            <div class="flex flex-wrap justify-center items-center gap-10 md:gap-24">
+                <div class="flex items-center grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition duration-500 group">
+                    <img src="image/MUCODEC.png" alt="MUCODEC" class="h-10 md:h-16 w-auto" onerror="this.nextElementSibling.style.display='block';this.style.display='none'">
+                    <span class="text-xl md:text-3xl font-black text-secondary hidden">MUCODEC</span>
+                </div>
+                <div class="flex items-center grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition duration-500 group">
+                    <img src="image/CEC.png" alt="CEC" class="h-10 md:h-16 w-auto" onerror="this.nextElementSibling.style.display='block';this.style.display='none'">
+                    <span class="text-xl md:text-3xl font-black text-secondary hidden">CEC</span>
+                </div>
+                <div class="flex items-center grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition duration-500 group">
+                    <img src="image/DANGOTE.png" alt="DANGOTE" class="h-10 md:h-16 w-auto" onerror="this.nextElementSibling.style.display='block';this.style.display='none'">
+                    <span class="text-xl md:text-3xl font-black text-secondary hidden">DANGOTE</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 
+        ================================================================
+        SECTION : FOOTER (SANS LOGO, TEXTES AGRANDIS)
+        ================================================================
+    -->
+    <footer class="bg-primary py-16 text-white border-t border-white/5 reveal text-left">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div class="space-y-6">
+                    <!-- Slogan agrandi -->
+                    <p class="text-gray-400 text-base italic leading-relaxed">OBTS un jour, OBTS pour toujours.</p>
+                    <div class="flex space-x-6 pt-2">
+                        <a href="#" class="text-gray-400 hover:text-white transition-all text-xl magnet"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-all text-xl magnet"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://wa.me/242066707014" target="_blank" class="text-gray-400 hover:text-white transition-all text-xl magnet"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-black uppercase text-secondary mb-8 tracking-widest">Navigation</h4>
+                    <ul class="space-y-4 text-gray-400 text-base italic">
+                        <li><a href="#accueil" class="hover:text-white transition-all">Accueil</a></li>
+                        <li><button onclick="openServiceModal('about')" class="hover:text-white transition-all text-left">À propos de nous</button></li>
+                        <li><a href="#services" class="hover:text-white transition-all">Nos Services</a></li>
+                        <li><a href="#galerie" class="hover:text-white transition-all">Galerie</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-black uppercase text-secondary mb-8 tracking-widest">Prestations</h4>
+                    <ul class="space-y-4 text-gray-400 text-base italic">
+                        <li><button onclick="openServiceModal('transport')" class="hover:text-white transition-all text-left">Transports</button></li>
+                        <li><button onclick="openServiceModal('demenagement')" class="hover:text-white transition-all text-left">Déménagement & Aménagement</button></li>
+                        <li><button onclick="openServiceModal('assainissement')" class="hover:text-white transition-all text-left">Assainissement</button></li>
+                        <li><button onclick="openServiceModal('livraison')" class="hover:text-white transition-all text-left">Livraison Express</button></li>
+                        <li><button onclick="openServiceModal('construction')" class="hover:text-white transition-all text-left">Construction Bâtiment</button></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-black uppercase text-secondary mb-8 tracking-widest">Contact direct</h4>
+                    <div class="text-gray-400 text-base leading-relaxed space-y-4">
+                        <p class="text-white font-bold text-lg tracking-tight">(+242)06 670 70 14/04 036 95 95</p>
+                        <p class="text-secondary italic">infos@obts-congo.com</p>
+                        <p>Lun-Ven : 07h30 - 18h30</p>
+                        <p>Samedi : 07h30 - 14h30</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BARRE DE COPYRIGHT ET DÉVELOPPEUR (TEXTE AGRANDI) -->
+            <div class="mt-12 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 uppercase tracking-[0.15em]">
+                <p class="mb-6 md:mb-0">&copy; 2026 OBTS. Tous droits réservés.</p>
+                
+                <div class="flex items-center gap-6 mb-6 md:mb-0 lowercase tracking-normal text-gray-400 italic">
+                    <span class="capitalize text-base">Développé par</span>
+                    <a href="https://wa.link/61ao9y" target="_blank" class="hover:scale-110 transition-transform duration-300">
+                        <img src="image/logo vendeurs+boost.jpeg" alt="Logo Vendeurs Boost" class="h-16 md:h-28 w-auto object-contain rounded-xl shadow-2xl border border-white/5" onerror="this.src='https://via.placeholder.com/200x80?text=Vendeurs+Boost'">
+                    </a>
+                </div>
+
+               
+        </div>
+    </footer>
+
+    <!-- 
+        ================================================================
+        MODAL : DÉTAILS SERVICES & À PROPOS
+        ================================================================
+    -->
+    <div id="service-modal" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-primary/60 backdrop-blur-sm">
+        <div id="service-modal-content" class="bg-white w-full max-w-lg rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+            <div class="bg-gray-50 p-8 border-b border-gray-100 flex justify-between items-start">
+                <div id="modal-icon-container" class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg text-secondary text-2xl">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <button onclick="closeServiceModal()" class="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-primary transition shadow-sm">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-8 space-y-4 overflow-y-auto no-scrollbar" style="max-height: 50vh;">
+                <h4 id="modal-title" class="text-2xl font-bold text-primary uppercase italic">Titre</h4>
+                <div class="w-12 h-1 bg-secondary rounded-full mb-6"></div>
+                <div id="modal-description" class="text-gray-600 leading-relaxed italic text-sm text-left"></div>
+            </div>
+            <div class="p-8 bg-gray-50 flex justify-end mt-auto">
+                <button onclick="closeServiceModal()" class="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-secondary transition-all text-xs uppercase tracking-widest">
+                    Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+        ================================================================
+        CHATBOT
+        ================================================================
+    -->
+    <div class="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[100] text-left">
+        <div id="chatbot-window" class="absolute bottom-20 md:bottom-24 right-0 rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col w-72 md:w-80">
+            <div class="bg-primary/90 p-4 text-white flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-secondary rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-robot text-sm animate-bounce-slow"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-xs">Assistant OBTS</p>
+                        <p class="text-[8px] text-accent uppercase font-black">En ligne</p>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="hover:text-secondary p-2"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-4 text-xs no-scrollbar">
+                <div class="bg-white/90 p-3 rounded-2xl rounded-tl-none shadow-sm text-gray-700 italic">
+                    Bonjour ! Je suis l'assistant **OBTS**. Comment puis-je vous aider aujourd'hui ?
+                </div>
+            </div>
+
+            <div class="p-3 bg-white/60 border-t border-gray-100 flex flex-wrap gap-2">
+                <button onclick="askBot('services')" class="text-[9px] px-3 py-1.5 bg-gray-50 hover:bg-secondary hover:text-white rounded-lg transition font-bold uppercase">Nos Services ?</button>
+                <button onclick="askBot('adresse')" class="text-[9px] px-3 py-1.5 bg-gray-50 hover:bg-secondary hover:text-white rounded-lg transition font-bold uppercase">Adresse ?</button>
+                <button onclick="askBot('contact')" class="text-[9px] px-3 py-1.5 bg-gray-50 hover:bg-secondary hover:text-white rounded-lg transition font-bold uppercase">Contact ?</button>
+                <button onclick="askBot('horaires')" class="text-[9px] px-3 py-1.5 bg-gray-50 hover:bg-secondary hover:text-white rounded-lg transition font-bold uppercase">Horaires ?</button>
+                <button onclick="askBot('partenaires')" class="text-[9px] px-3 py-1.5 bg-gray-50 hover:bg-secondary hover:text-white rounded-xl transition font-bold uppercase">Partenaires ?</button>
+            </div>
+        </div>
+
+        <button id="chatbot-launcher" onclick="toggleChat()" class="w-14 h-14 md:w-20 md:h-20 bg-secondary text-white rounded-[2rem] shadow-2xl flex items-center justify-center hover:scale-110 transition-transform">
+            <i class="fas fa-comments text-xl md:text-3xl"></i>
+        </button>
+    </div>
+
+    <script>
+        // DONNÉES DES SERVICES & À PROPOS
+        const serviceData = {
+            about: {
+                title: "À propos de OBTS",
+                icon: "fa-building",
+                description: `
+                    <p class='mb-4'>Fondée en 2010, <strong>OBTS</strong> est une entreprise spécialisée dans les services de transport, de logistique, d’aménagement, d’assainissement et de construction. Depuis plus de dix ans, nous accompagnons entreprises et particuliers en proposant des solutions fiables, sécurisées et adaptées aux besoins réels du terrain.</p>
+                    <h5 class='font-bold text-primary mb-2 uppercase text-xs tracking-wider'>Nos services principaux</h5>
+                    <ul class='space-y-3 mb-4'>
+                        <li><strong>Transport :</strong> OBTS assure l’acheminement sécurisé de vos marchandises, colis ou équipements, en ville comme entre différentes localités.</li>
+                        <li><strong>Aménagement & Déménagement :</strong> Nous vous accompagnons dans tous vos projets, du déplacement des biens à leur installation complète dans votre nouvel espace.</li>
+                        <li><strong>Assainissement :</strong> Interventions efficaces pour le nettoyage, l’évacuation des déchets, le débouchage et le vidange de fosses septiques.</li>
+                        <li><strong>Livraison Express :</strong> Service fiable et rapide pour colis, documents, achat de gaz ou courses en supermarché.</li>
+                        <li><strong>Travaux de Construction :</strong> Réalisation de projets, petits travaux et réhabilitation avec professionnalisme et rigueur.</li>
+                    </ul>
+                    <h5 class='font-bold text-primary mb-2 uppercase text-xs tracking-wider'>Notre engagement</h5>
+                    <p class='mb-4'>Depuis 2010, notre priorité reste la satisfaction de nos clients, la sécurité de leurs biens et la qualité de nos services.</p>
+                    <p class='font-bold text-secondary italic'>👉 OBTS un jour, OBTS pour toujours.</p>
+                `
+            },
+            transport: {
+                title: "Service Transport – OBTS",
+                icon: "fa-truck",
+                description: "OBTS propose un service de transport fiable, rapide et adapté aux réalités du terrain. Nous assurons l’acheminement sécurisé de vos marchandises, colis ou équipements, en ville comme entre différentes localités. Que vous soyez une entreprise ou un particulier, nous mettons à votre disposition des solutions adaptées : livraison, transport de colis et transport d’objets volumineux."
+            },
+            demenagement: {
+                title: "Service Aménagement & Déménagement – OBTS",
+                icon: "fa-box-open",
+                description: "OBTS vous accompagne dans tous vos projets de déménagement et d’aménagement, avec un service organisé, sécurisé et sans stress. Nous prenons en charge le déplacement de vos biens (mobilier, équipements, effets personnels), ainsi que l’installation dans votre nouvel espace. De l’emballage au transport, jusqu’à la mise en place, chaque étape est maîtrisée. Que vous soyez une entreprise ou un particulier, nous vous proposons des solutions adaptées : déménagement local ou interurbain, manutention d’objets lourds, réorganisation d’espaces."
+            },
+            assainissement: {
+                title: "Service Assainissement – OBTS",
+                icon: "fa-hand-sparkles",
+                description: "OBTS propose des solutions efficaces d’assainissement pour garantir des espaces propres, sains et sécurisés. Nous intervenons pour le nettoyage, l’évacuation des déchets, le débouchage, le vidange des fosses septique ainsi que l’entretien des zones insalubres, aussi bien pour les entreprises que pour les particuliers. Grâce à une organisation rigoureuse et des méthodes adaptées, nous assurons des interventions rapides et efficaces, même dans des conditions difficiles."
+            },
+            livraison: {
+                title: "Service Livraison Express – OBTS",
+                icon: "fa-bolt",
+                description: "OBTS assure un service de livraison express rapide, fiable et sécurisé pour tous vos envois urgents. Nous prenons en charge vos colis, documents, achat de gaz de cuisine, vos courses en supermarchés, marchandises etc. ; avec une priorité absolue, garantissant une livraison dans les plus brefs délais, en toute sécurité. Disponible pour les entreprises comme pour les particuliers, notre service s’adapte à vos urgences avec réactivité et efficacité."
+            },
+            construction: {
+                title: "Service Travaux de Construction – OBTS",
+                icon: "fa-trowel-bricks",
+                description: "OBTS réalise vos travaux de construction avec rigueur, efficacité et professionnalisme. Nous intervenons sur différents types de projets : construction de bâtiments, petits travaux, réhabilitation et aménagement d’espaces, en respectant les normes et les délais. Que vous soyez un particulier ou une entreprise, nous vous accompagnons de la mise en œuvre jusqu’à la réalisation, avec des solutions adaptés à vos besoins et à votre budget."
+            }
+        };
+
+        function openServiceModal(key) {
+            const data = serviceData[key];
+            if (!data) return;
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-description').innerHTML = data.description;
+            document.getElementById('modal-icon-container').innerHTML = `<i class="fas ${data.icon}"></i>`;
+            document.getElementById('service-modal').classList.add('active');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeServiceModal() {
+            document.getElementById('service-modal').classList.remove('active');
+            document.body.style.overflow = ''; 
+        }
+
+        document.getElementById('service-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeServiceModal();
+        });
+
+        // CURSEUR
+        const dot = document.getElementById('cursor-dot');
+        const outline = document.getElementById('cursor-outline');
+        if (window.innerWidth >= 1024) {
+            document.addEventListener('mousemove', (e) => {
+                dot.style.left = e.clientX + 'px';
+                dot.style.top = e.clientY + 'px';
+                setTimeout(() => {
+                    outline.style.left = e.clientX + 'px';
+                    outline.style.top = e.clientY + 'px';
+                }, 40);
+            });
+        }
+
+        // REVEAL
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+                else entry.target.classList.remove('active');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // CHATBOT
+        function toggleChat() { document.getElementById('chatbot-window').classList.toggle('active'); }
+        
+        const responses = {
+            services: "Nous proposons : Transports, Manutention, Livraison express, Déménagement, Aménagement, Emballage, Assainissement, Débarras, Construction.",
+            adresse: "Nous sommes situés à Pointe-Noire, Arrondissement 06 Ngoyo, Route de la frontière, arrêt Tchivoundoulou.",
+            contact: "Appelez-nous au +242 06 670 70 14 ou au +242 04 036 95 95. Email : infos@obts-congo.com",
+            horaires: "Lun-Ven : 07h30-18h30 | Sam : 07h30-14h30. Fermé le dimanche.",
+            partenaires: "Nos partenaires incluent : MUCODEC, CEC et DANGOTE."
+        };
+
+        function askBot(key) {
+            const container = document.getElementById('chat-messages');
+            const questionText = {
+                services: "Nos Services ?", adresse: "Votre Adresse ?", contact: "Comment vous contacter ?", horaires: "Quels sont vos horaires ?", partenaires: "Vos Partenaires ?"
+            };
+            const userMsg = document.createElement('div');
+            userMsg.className = "bg-secondary text-white p-3 rounded-2xl rounded-tr-none shadow-sm self-end ml-8 text-right font-bold";
+            userMsg.innerText = questionText[key];
+            container.appendChild(userMsg);
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = "bg-white/90 p-3 rounded-2xl rounded-tl-none shadow-sm text-gray-700 mr-8 border border-gray-100 italic animate-fade-in";
+                botMsg.innerHTML = responses[key];
+                container.appendChild(botMsg);
+                container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+            }, 400);
+        }
+
+        // MOBILE MENU
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+        document.addEventListener('click', () => { if(mobileMenu) mobileMenu.classList.add('hidden'); });
+
+        // SLIDER
+        window.scrollSlider = function(id, direction) {
+            const slider = document.getElementById(id);
+            if (!slider) return;
+            const card = slider.querySelector('.slider-card');
+            const scrollAmount = card ? card.offsetWidth + 24 : slider.clientWidth * 0.8;
+            slider.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+        };
+
+        // WHATSAPP
+        function sendToWhatsApp() {
+            const nom = document.getElementById('nom').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const service = document.getElementById('service').value;
+            const message = document.getElementById('message').value;
+            if(!nom || !email || !service || !message) {
+                const toast = document.getElementById('custom-toast');
+                toast.style.opacity = "1";
+                setTimeout(() => toast.style.opacity = "0", 3000);
+                return;
+            }
+            let text = `*OBTS: NOUVELLE DEMANDE*\n*Nom :* ${nom}\n*Email :* ${email}\n*Tel :* ${phone}\n*Besoin :* ${service}\n*Message :* ${message}`;
+            window.open(`https://wa.me/242066707014?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        const magnets = document.querySelectorAll('.magnet, button, a, .slider-card, select, input, textarea');
+        magnets.forEach(m => {
+            m.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            m.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+    </script>
+</body>
+</html>
